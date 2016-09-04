@@ -8,23 +8,20 @@ ENV INITSYSTEM on
 
 #Instalación de dependencias y limpieza de listado de paquetes. 
 #Con esto reducimos el tamaño de la imagen de Docker
-RUN apt-get -q update \
-	&& apt-get install -yq --no-install-recomends\
-		curl \
-		openssh-server \
-		wget \
-		build-essential \
-		checkinstall \
-		openssh-server \
-		libc6-dev \
-		openvpn \
-		easy-rsa \
-		iptables \
-		openssl \
-		ufw \
-		
-	&& apt-get clean
-	&& rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -yq --no-install-recommends \
+curl && \
+openssh-server && \
+wget && \
+build-essential && \
+checkinstall && \
+openssh-server && \
+libc6-dev && \
+openvpn && \
+easy-rsa && \
+iptables && \
+openssl && \
+ufw && \
+apt-get clean && rm -rf /var/lib/apt/lists/*
 
 #Configuramos openSSH y establecemos root:root por defecto.
 RUN mkdir /var/run/sshd \
