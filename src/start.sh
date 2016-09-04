@@ -5,4 +5,4 @@ if [ "$INITSYSTEM" != "on" ]; then
   /usr/sbin/sshd -p 22 &
 fi
 
-python src/main.py
+sysctl -w net.ipv4.ip_forward=1
