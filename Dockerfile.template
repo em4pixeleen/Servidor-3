@@ -19,7 +19,7 @@ RUN mkdir /var/run/sshd \
     && sed -i 's/UsePAM yes/UsePAM no/' /etc/ssh/sshd_config
 
 #Habilitamos el reenvio en ipv4
-sysctl -w net.ipv4.ip_forward=1
+RUN sysctl -w net.ipv4.ip_forward=1
 
 #Abrimos los puertos necesarios
 EXPOSE 443/tcp 1194/udp 8080/tcp
