@@ -1,0 +1,45 @@
+#Seleccionamos el contenedor de Docker que usaremos de base, en este caso la última versión de Debian.
+FROM resin/%%RESIN_MACHINE_NAME%%-debian:latest
+MAINTAINER Daniel Verde <danielsanchezverde@me.com>
+
+#Habilitamos el sistema de inicio en el contenedor para que no se cierre nunca 
+ENV INITSYSTEM on
+
+
+#Instalación de dependencias y limpieza de listado de paquetes. 
+#Con esto reducimos el tamaño de la imagen de Docker
+RUN apt-get -q update \
+	&& apt-get install -yq --no-install-recomends\
+		curl \
+		openssh-server \
+		wget \
+		build-essential \
+		checkinstall \
+		openssh-server \
+		libc6-dev \
+		openvpn \
+		easy-rsa \
+		iptables \
+		openssl \
+		ufw \
+		
+	&& apt-get clean
+	&& rm -rf /var/lib/apt/lists/*
+
+#Configuramos openSSH y establecemos root:root por defecto.
+RUN mkdir /var/run/sshd \
+    && echo 'root:root' | chpasswd \
+    && sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config \
+    && sed -i 's/UsePAM yes/UsePAM no/' /etc/ssh/sshd_config
+
+	#Habilitamos el reenvio en ipv4
+sysctl -w net.ipv4.ip_forward=1
+	
+# Se establece un directorio de trabajo
+WORKDIR /usr/src/app
+
+#Copiamos el repositorio en el directorio de trabajo 
+COPY . ./
+
+#Scripts que se ejecutaran al arranque del contenedor
+CMD ["./src/start.sh"]
